@@ -2,6 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'dart:ui';
 
+import 'package:weather/daily_forecast.dart';
+import 'package:weather/add_info.dart';
+
 export 'homepage.dart';
 
 class WeatherScreen extends StatelessWidget {
@@ -77,8 +80,8 @@ class WeatherScreen extends StatelessWidget {
                   ),
                 ),
               ),
-              const SizedBox(height: 18),
-              Align(
+              const SizedBox(height: 40),
+              const Align(
                 alignment: Alignment.centerLeft,
                 child: const Text(
                   "Weather Forecast",
@@ -92,155 +95,15 @@ class WeatherScreen extends StatelessWidget {
                 scrollDirection: Axis.horizontal,
                 child: const Row(
                   children: [
-                    SizedBox(
-                      width: 120,
-                      child: Card(
-                        child: Padding(
-                          padding: EdgeInsets.all(20.0),
-                          child: Column(
-                            children: [
-                              Text(
-                                "04:30",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              SizedBox(
-                                height: 10,
-                              ),
-                              Icon(
-                                CupertinoIcons.cloud_fill,
-                                color: CupertinoColors.white,
-                              ),
-                              SizedBox(
-                                height: 10,
-                              ),
-                              Text("Monday"),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      width: 120,
-                      child: Card(
-                        child: Padding(
-                          padding: EdgeInsets.all(20.0),
-                          child: Column(
-                            children: [
-                              Text(
-                                "04:30",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              SizedBox(
-                                height: 10,
-                              ),
-                              Icon(
-                                CupertinoIcons.cloud_fill,
-                                color: CupertinoColors.white,
-                              ),
-                              SizedBox(
-                                height: 10,
-                              ),
-                              Text("Monday"),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      width: 120,
-                      child: Card(
-                        child: Padding(
-                          padding: EdgeInsets.all(20.0),
-                          child: Column(
-                            children: [
-                              Text(
-                                "04:30",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              SizedBox(
-                                height: 10,
-                              ),
-                              Icon(
-                                CupertinoIcons.cloud_fill,
-                                color: CupertinoColors.white,
-                              ),
-                              SizedBox(
-                                height: 10,
-                              ),
-                              Text("Monday"),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      width: 120,
-                      child: Card(
-                        child: Padding(
-                          padding: EdgeInsets.all(20.0),
-                          child: Column(
-                            children: [
-                              Text(
-                                "04:30",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              SizedBox(
-                                height: 10,
-                              ),
-                              Icon(
-                                CupertinoIcons.cloud_fill,
-                                color: CupertinoColors.white,
-                              ),
-                              SizedBox(
-                                height: 10,
-                              ),
-                              Text("Monday"),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      width: 120,
-                      child: Card(
-                        child: Padding(
-                          padding: EdgeInsets.all(20.0),
-                          child: Column(
-                            children: [
-                              Text(
-                                "04:30",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              SizedBox(
-                                height: 10,
-                              ),
-                              Icon(
-                                CupertinoIcons.cloud_fill,
-                                color: CupertinoColors.white,
-                              ),
-                              SizedBox(
-                                height: 10,
-                              ),
-                              Text("Monday"),
-                            ],
-                          ),
-                        ),
-                      ),
-                    )
+                    DailyForecast(),
+                    DailyForecast(),
+                    DailyForecast(),
+                    DailyForecast(),
+                    DailyForecast(),
                   ],
                 ),
               ),
-              const SizedBox(height: 18),
+              const SizedBox(height: 40),
               const Align(
                 alignment: Alignment.centerLeft,
                 child: const Text(
@@ -252,71 +115,20 @@ class WeatherScreen extends StatelessWidget {
                 scrollDirection: Axis.horizontal,
                 child: Row(
                   children: [
-                    Card(
-                      color: CupertinoColors.transparent,
-                      child: Padding(
-                        padding: EdgeInsets.all(30.0),
-                        child: Column(
-                          children: [
-                            Icon(
-                              CupertinoIcons.drop_fill,
-                              color: CupertinoColors.white,
-                            ),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            Text("Humidity"),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            Text("94"),
-                          ],
-                        ),
-                      ),
+                    AddInfo(
+                      icon: CupertinoIcons.drop_fill,
+                      title: "Humidity",
+                      value: "80",
                     ),
-                    Card(
-                      color: CupertinoColors.transparent,
-                      child: Padding(
-                        padding: EdgeInsets.all(30.0),
-                        child: Column(
-                          children: [
-                            Icon(
-                              CupertinoIcons.wind,
-                              color: CupertinoColors.white,
-                            ),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            Text("Wind Speed"),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            Text("94"),
-                          ],
-                        ),
-                      ),
+                    AddInfo(
+                      icon: CupertinoIcons.wind,
+                      title: "Wind Speed",
+                      value: "89",
                     ),
-                    Card(
-                      color: CupertinoColors.transparent,
-                      child: Padding(
-                        padding: EdgeInsets.all(30.0),
-                        child: Column(
-                          children: [
-                            Icon(
-                              CupertinoIcons.gauge,
-                              color: CupertinoColors.white,
-                            ),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            Text("Pressure"),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            Text("94"),
-                          ],
-                        ),
-                      ),
+                    AddInfo(
+                      icon: CupertinoIcons.gauge,
+                      title: "Pressure",
+                      value: "100",
                     ),
                   ],
                 ),
