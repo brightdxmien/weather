@@ -86,7 +86,7 @@ class WeatherScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(
-                height: 20,
+                height: 10,
               ),
               const SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
@@ -241,9 +241,85 @@ class WeatherScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 18),
-              Placeholder(
-                fallbackHeight: 140,
-                //additional information
+              const Align(
+                alignment: Alignment.centerLeft,
+                child: const Text(
+                  "Additional Information",
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+              ),
+              const SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: [
+                    Card(
+                      color: CupertinoColors.transparent,
+                      child: Padding(
+                        padding: EdgeInsets.all(30.0),
+                        child: Column(
+                          children: [
+                            Icon(
+                              CupertinoIcons.drop_fill,
+                              color: CupertinoColors.white,
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            Text("Humidity"),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            Text("94"),
+                          ],
+                        ),
+                      ),
+                    ),
+                    Card(
+                      color: CupertinoColors.transparent,
+                      child: Padding(
+                        padding: EdgeInsets.all(30.0),
+                        child: Column(
+                          children: [
+                            Icon(
+                              CupertinoIcons.wind,
+                              color: CupertinoColors.white,
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            Text("Wind Speed"),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            Text("94"),
+                          ],
+                        ),
+                      ),
+                    ),
+                    Card(
+                      color: CupertinoColors.transparent,
+                      child: Padding(
+                        padding: EdgeInsets.all(30.0),
+                        child: Column(
+                          children: [
+                            Icon(
+                              CupertinoIcons.gauge,
+                              color: CupertinoColors.white,
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            Text("Pressure"),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            Text("94"),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               )
             ],
           ),
