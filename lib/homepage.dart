@@ -4,17 +4,37 @@ import 'dart:ui';
 
 import 'package:weather/daily_forecast.dart';
 import 'package:weather/add_info.dart';
-
+import 'package:http/http.dart' as http;
+import 'package:weather/extra.dart';
 export 'homepage.dart';
 
-class WeatherScreen extends StatelessWidget {
+class WeatherScreen extends StatefulWidget {
   const WeatherScreen({super.key});
+
+  @override
+  State<WeatherScreen> createState() => _WeatherScreenState();
+}
+
+class _WeatherScreenState extends State<WeatherScreen> {
+  @override
+  void initState() {
+    super.initState();
+    getWeather();
+  }
+
+  Future getWeather() async {
+    String cityName = "London";
+    final result = await http.get(Uri.parse(
+        'https://api.openweathermap.org/data/2.5/weather?q=$cityName,uk&APPID=$opeenWeatherApi'));
+
+    print(result.body);
+  }
 
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
       navigationBar: CupertinoNavigationBar(
-        backgroundColor: CupertinoColors.black,
+        backgroundColor: const Color.fromARGB(255, 0, 0, 0),
         middle: const Text(
           "Weather App",
           style: TextStyle(
@@ -53,7 +73,7 @@ class WeatherScreen extends StatelessWidget {
                     child: Column(
                       children: [
                         Text(
-                          "300°C",
+                          "26°C",
                           style: TextStyle(
                             fontSize: 40,
                             fontWeight: FontWeight.bold,
@@ -95,11 +115,31 @@ class WeatherScreen extends StatelessWidget {
                 scrollDirection: Axis.horizontal,
                 child: const Row(
                   children: [
-                    DailyForecast(),
-                    DailyForecast(),
-                    DailyForecast(),
-                    DailyForecast(),
-                    DailyForecast(),
+                    DailyForecast(
+                      day: "Monday",
+                      icon: CupertinoIcons.cloud_fill,
+                      time: "10:50",
+                    ),
+                    DailyForecast(
+                      day: "Tuesday",
+                      icon: CupertinoIcons.cloud_sun_fill,
+                      time: "09:00",
+                    ),
+                    DailyForecast(
+                      day: "Monday",
+                      icon: CupertinoIcons.cloud_rain_fill,
+                      time: "10:50",
+                    ),
+                    DailyForecast(
+                      day: "Monday",
+                      icon: CupertinoIcons.cloud_sun_bolt_fill,
+                      time: "10:50",
+                    ),
+                    DailyForecast(
+                      day: "Monday",
+                      icon: CupertinoIcons.cloud_rain_fill,
+                      time: "10:50",
+                    ),
                   ],
                 ),
               ),

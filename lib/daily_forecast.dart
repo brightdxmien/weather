@@ -2,11 +2,19 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class DailyForecast extends StatelessWidget {
-  const DailyForecast({super.key});
+  final String time;
+  final IconData icon;
+  final String day;
+  const DailyForecast({
+    super.key,
+    required this.day,
+    required this.icon,
+    required this.time,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return const SizedBox(
+    return SizedBox(
       width: 120,
       child: Card(
         child: Padding(
@@ -14,7 +22,7 @@ class DailyForecast extends StatelessWidget {
           child: Column(
             children: [
               Text(
-                "90:40",
+                time,
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                 ),
@@ -23,13 +31,13 @@ class DailyForecast extends StatelessWidget {
                 height: 10,
               ),
               Icon(
-                CupertinoIcons.cloud_fill,
+                icon,
                 color: CupertinoColors.white,
               ),
               SizedBox(
                 height: 10,
               ),
-              Text("Monday"),
+              Text(day),
             ],
           ),
         ),
