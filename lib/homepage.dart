@@ -192,10 +192,13 @@ class _WeatherScreenState extends State<WeatherScreen> {
                       itemBuilder: (context, index) {
                         final hourlyItem = data['list'][index + 1];
                         final time = DateTime.parse(hourlyItem['dt_txt']);
+                        final miniTemp = hourlyItem['main']['temp'];
+                        final miniTemp2 = miniTemp - 272.15;
+
                         final hourlySky =
                             data['list'][index + 1]['weather'][0]['main'];
                         return HourlyForecast(
-                          temperature: hourlyItem['main']['temp'].toString(),
+                          temperature: "${miniTemp2.toStringAsFixed(2)}°C",
                           icon: hourlySky == "Clouds" || hourlySky == "Clear"
                               ? CupertinoIcons.cloud_fill
                               : CupertinoIcons.sun_min_fill,
