@@ -1,13 +1,12 @@
 import 'dart:convert';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'dart:ui';
-
+import 'package:http/http.dart' as http;
 import 'package:weather/daily_forecast.dart';
 import 'package:weather/add_info.dart';
-import 'package:http/http.dart' as http;
 import 'package:weather/extra.dart';
+import 'package:weather/main.dart';
 export 'homepage.dart';
 
 class LoadingScreen extends StatelessWidget {
@@ -16,9 +15,12 @@ class LoadingScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
-        child: Center(
-      child: CircularProgressIndicator(),
-    ));
+      child: Center(
+        child: RefreshProgressIndicator(
+          color: CupertinoColors.white,
+        ),
+      ),
+    );
   }
 }
 
@@ -30,25 +32,24 @@ class WeatherScreen extends StatefulWidget {
 }
 
 class _WeatherScreenState extends State<WeatherScreen> {
-  late double temp = 0;
+  late Future weatherData;
+
   @override
   void initState() {
     super.initState();
-    getWeather();
+    weatherData = getWeather();
   }
 
-  Future getWeather() async {
+  Future<Map<String, dynamic>> getWeather() async {
     try {
       String cityName = "London";
       final result = await http.get(Uri.parse(
           'https://api.openweathermap.org/data/2.5/forecast?q=$cityName,uk&APPID=$opeenWeatherApi'));
       final data = jsonDecode(result.body);
       if (data['cod'] != '200') {
-        throw "An Error Occured";
+        throw "An Error Occurred";
       }
-      setState(() {
-        temp = data['list'][0]['main']['temp'];
-      });
+      return data;
     } catch (e) {
       throw e.toString();
     }
@@ -67,142 +68,155 @@ class _WeatherScreenState extends State<WeatherScreen> {
           ),
         ),
         trailing: GestureDetector(
-            onTap: () {
-              debugPrint("Pressed");
-            },
-            child: const Icon(
-              size: 25.0,
-              CupertinoIcons.refresh,
-              // progress: _animationController,
-              color: CupertinoColors.systemGrey6,
-            )),
-      ),
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 50, sigmaY: 50),
-        child: Padding(
-          padding: const EdgeInsets.only(
-            left: 8,
-            right: 8,
+          onTap: () {
+            debugPrint("Pressed");
+          },
+          child: const Icon(
+            size: 25.0,
+            CupertinoIcons.refresh,
+            color: CupertinoColors.systemGrey6,
           ),
-          child: temp == 0
-              ? LoadingScreen()
-              : Column(
-                  children: [
-                    SizedBox(
-                      width: double.infinity,
-                      child: Card(
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(25)),
-                        elevation: 50,
-                        child: Padding(
-                          padding: EdgeInsets.all(20.0),
-                          child: Column(
-                            children: [
-                              Text(
-                                "$temp °C",
-                                style: TextStyle(
-                                  fontSize: 40,
-                                  fontWeight: FontWeight.bold,
-                                  color: CupertinoColors.white,
-                                ),
-                              ),
-                              Icon(
-                                CupertinoIcons.cloud_fill,
-                                size: 70,
+        ),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.only(left: 8, right: 8),
+        child: FutureBuilder(
+          future: weatherData, // Correct Future call
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const LoadingScreen();
+            } else if (snapshot.hasError) {
+              return Center(child: Text('Error: ${snapshot.error}'));
+            } else if (snapshot.hasData) {
+              print("Snapshot Has Data");
+            }
+
+            final data = snapshot.data!;
+            final currentTemp = data['list'][0]['main']['temp'];
+            final condition = data['list'][0]['weather'][0]['main'];
+            {
+              return Column(
+                children: [
+                  SizedBox(
+                    width: double.infinity,
+                    child: Card(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(25),
+                      ),
+                      elevation: 50,
+                      child: Padding(
+                        padding: const EdgeInsets.all(20.0),
+                        child: Column(
+                          children: [
+                            Text(
+                              "$currentTemp°C",
+                              style: const TextStyle(
+                                fontSize: 40,
+                                fontWeight: FontWeight.bold,
                                 color: CupertinoColors.white,
                               ),
-                              SizedBox(
-                                height: 10,
+                            ),
+                            Icon(
+                              condition == 'Clouds' || condition == 'Rain'
+                                  ? CupertinoIcons.cloud_fill
+                                  : CupertinoIcons.sun_min_fill,
+                              size: 70,
+                              color: CupertinoColors.white,
+                            ),
+                            const SizedBox(height: 10),
+                            Text(
+                              "$condition",
+                              style: TextStyle(
+                                fontSize: 17,
+                                fontWeight: FontWeight.w500,
                               ),
-                              Text(
-                                "Cloudy",
-                                style: TextStyle(
-                                  fontSize: 17,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
                       ),
                     ),
-                    const SizedBox(height: 40),
-                    const Align(
-                      alignment: Alignment.centerLeft,
-                      child: const Text(
-                        "Weather Forecast",
-                        style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 40),
+                  const Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      "Weather Forecast",
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
-                    const SizedBox(
-                      height: 10,
+                  ),
+                  const SizedBox(height: 10),
+                  const SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: [
+                        DailyForecast(
+                          day: "Monday",
+                          icon: CupertinoIcons.cloud_fill,
+                          time: "10:50",
+                        ),
+                        DailyForecast(
+                          day: "Tuesday",
+                          icon: CupertinoIcons.cloud_sun_fill,
+                          time: "09:00",
+                        ),
+                        DailyForecast(
+                          day: "Monday",
+                          icon: CupertinoIcons.cloud_rain_fill,
+                          time: "10:50",
+                        ),
+                        DailyForecast(
+                          day: "Monday",
+                          icon: CupertinoIcons.cloud_sun_bolt_fill,
+                          time: "10:50",
+                        ),
+                        DailyForecast(
+                          day: "Monday",
+                          icon: CupertinoIcons.cloud_rain_fill,
+                          time: "10:50",
+                        ),
+                      ],
                     ),
-                    const SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: const Row(
-                        children: [
-                          DailyForecast(
-                            day: "Monday",
-                            icon: CupertinoIcons.cloud_fill,
-                            time: "10:50",
-                          ),
-                          DailyForecast(
-                            day: "Tuesday",
-                            icon: CupertinoIcons.cloud_sun_fill,
-                            time: "09:00",
-                          ),
-                          DailyForecast(
-                            day: "Monday",
-                            icon: CupertinoIcons.cloud_rain_fill,
-                            time: "10:50",
-                          ),
-                          DailyForecast(
-                            day: "Monday",
-                            icon: CupertinoIcons.cloud_sun_bolt_fill,
-                            time: "10:50",
-                          ),
-                          DailyForecast(
-                            day: "Monday",
-                            icon: CupertinoIcons.cloud_rain_fill,
-                            time: "10:50",
-                          ),
-                        ],
+                  ),
+                  const SizedBox(height: 40),
+                  const Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      "Additional Information",
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
-                    const SizedBox(height: 40),
-                    const Align(
-                      alignment: Alignment.centerLeft,
-                      child: const Text(
-                        "Additional Information",
-                        style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.bold),
-                      ),
+                  ),
+                  const SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: [
+                        AddInfo(
+                          icon: CupertinoIcons.drop_fill,
+                          title: "Humidity",
+                          value: "80",
+                        ),
+                        AddInfo(
+                          icon: CupertinoIcons.wind,
+                          title: "Wind Speed",
+                          value: "89",
+                        ),
+                        AddInfo(
+                          icon: CupertinoIcons.gauge,
+                          title: "Pressure",
+                          value: "100",
+                        ),
+                      ],
                     ),
-                    const SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(
-                        children: [
-                          AddInfo(
-                            icon: CupertinoIcons.drop_fill,
-                            title: "Humidity",
-                            value: "80",
-                          ),
-                          AddInfo(
-                            icon: CupertinoIcons.wind,
-                            title: "Wind Speed",
-                            value: "89",
-                          ),
-                          AddInfo(
-                            icon: CupertinoIcons.gauge,
-                            title: "Pressure",
-                            value: "100",
-                          ),
-                        ],
-                      ),
-                    )
-                  ],
-                ),
+                  ),
+                ],
+              );
+            }
+          },
         ),
       ),
     );
