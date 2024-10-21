@@ -61,7 +61,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
       navigationBar: CupertinoNavigationBar(
         backgroundColor: const Color.fromARGB(255, 0, 0, 0),
         middle: const Text(
-          "Weather App",
+          "Weather",
           style: TextStyle(
             fontWeight: FontWeight.bold,
             color: CupertinoColors.systemGrey3,
@@ -69,7 +69,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
         ),
         trailing: GestureDetector(
           onTap: () {
-            debugPrint("Pressed");
+            setState(() {});
           },
           child: const Icon(
             size: 25.0,
@@ -97,6 +97,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
             final humidity = data['list'][0]['main']['humidity'];
             final condition = data['list'][0]['weather'][0]['main'];
             final windSpeed = data['list'][0]['wind']['speed'];
+            final celsius = currentTemp - 272.15;
 
             {
               return Column(
@@ -113,7 +114,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
                         child: Column(
                           children: [
                             Text(
-                              "$currentTemp°C",
+                              "${celsius.toStringAsFixed(2)}°C",
                               style: const TextStyle(
                                 fontSize: 40,
                                 fontWeight: FontWeight.bold,
@@ -152,36 +153,43 @@ class _WeatherScreenState extends State<WeatherScreen> {
                     ),
                   ),
                   const SizedBox(height: 10),
-                  const SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      children: [
-                        DailyForecast(
-                          day: "Monday",
-                          icon: CupertinoIcons.cloud_fill,
-                          time: "10:50",
-                        ),
-                        DailyForecast(
-                          day: "Tuesday",
-                          icon: CupertinoIcons.cloud_sun_fill,
-                          time: "09:00",
-                        ),
-                        DailyForecast(
-                          day: "Monday",
-                          icon: CupertinoIcons.cloud_rain_fill,
-                          time: "10:50",
-                        ),
-                        DailyForecast(
-                          day: "Monday",
-                          icon: CupertinoIcons.cloud_sun_bolt_fill,
-                          time: "10:50",
-                        ),
-                        DailyForecast(
-                          day: "Monday",
-                          icon: CupertinoIcons.cloud_rain_fill,
-                          time: "10:50",
-                        ),
-                      ],
+                  // SingleChildScrollView(
+                  //   scrollDirection: Axis.horizontal,
+                  //   child: Row(
+                  //     children: [
+                  //       for (int i = 0; i < 20; i++)
+                  //         HourlyForecast(
+                  //           temperature:
+                  //               data['list'][i + 1]['main']['temp'].toString(),
+                  //           icon: data['list'][i + 1]['weather'][0]['main'] ==
+                  //                       'Clouds' ||
+                  //                   data['list'][i + 1]['weather'][0]['main'] ==
+                  //                       'Clear'
+                  //               ? CupertinoIcons.cloud_fill
+                  //               : CupertinoIcons.sun_min_fill,
+                  //           time: data['list'][i + 1]['dt'].toString(),
+                  //         ),
+                  //     ],
+                  //   ),
+                  // ),
+
+                  SizedBox(
+                    height: 160,
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: 5,
+                      itemBuilder: (context, index) {
+                        final hourlyItem = data['list'][index + 1];
+                        final hourlySky =
+                            data['list'][index + 1]['weather'][0]['main'];
+                        return HourlyForecast(
+                          temperature: hourlyItem['main']['temp'].toString(),
+                          icon: hourlySky == "Clouds" || hourlySky == "Clear"
+                              ? CupertinoIcons.cloud_fill
+                              : CupertinoIcons.sun_min_fill,
+                          time: hourlyItem['dt'].toString(),
+                        );
+                      },
                     ),
                   ),
                   const SizedBox(height: 40),

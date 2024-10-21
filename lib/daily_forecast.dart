@@ -1,13 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class DailyForecast extends StatelessWidget {
+class HourlyForecast extends StatelessWidget {
   final String time;
   final IconData icon;
-  final String day;
-  const DailyForecast({
+  final String temperature;
+  const HourlyForecast({
     super.key,
-    required this.day,
+    required this.temperature,
     required this.icon,
     required this.time,
   });
@@ -37,7 +37,7 @@ class DailyForecast extends StatelessWidget {
               SizedBox(
                 height: 10,
               ),
-              Text(day),
+              Text(temperature),
             ],
           ),
         ),
