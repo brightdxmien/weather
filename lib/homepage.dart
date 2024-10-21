@@ -93,7 +93,11 @@ class _WeatherScreenState extends State<WeatherScreen> {
 
             final data = snapshot.data!;
             final currentTemp = data['list'][0]['main']['temp'];
+            final pressure = data['list'][0]['main']['pressure'];
+            final humidity = data['list'][0]['main']['humidity'];
             final condition = data['list'][0]['weather'][0]['main'];
+            final windSpeed = data['list'][0]['wind']['speed'];
+
             {
               return Column(
                 children: [
@@ -191,24 +195,23 @@ class _WeatherScreenState extends State<WeatherScreen> {
                       ),
                     ),
                   ),
-                  const SingleChildScrollView(
+                  SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     child: Row(
                       children: [
                         AddInfo(
                           icon: CupertinoIcons.drop_fill,
-                          title: "Humidity",
-                          value: "80",
+                          title: "Wind Speed",
+                          value: "$windSpeed",
                         ),
                         AddInfo(
-                          icon: CupertinoIcons.wind,
-                          title: "Wind Speed",
-                          value: "89",
-                        ),
+                            icon: CupertinoIcons.drop_fill,
+                            title: "Humidity",
+                            value: "$humidity"),
                         AddInfo(
                           icon: CupertinoIcons.gauge,
                           title: "Pressure",
-                          value: "100",
+                          value: "$pressure",
                         ),
                       ],
                     ),
