@@ -22,20 +22,22 @@ class HourlyForecast extends StatelessWidget {
           child: Column(
             children: [
               Text(
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
                 time,
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                 ),
               ),
               SizedBox(
-                height: 10,
+                height: 20,
               ),
               Icon(
                 icon,
                 color: CupertinoColors.white,
               ),
               SizedBox(
-                height: 10,
+                height: 20,
               ),
               Text(temperature),
             ],

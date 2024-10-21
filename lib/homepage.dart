@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'dart:ui';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 import 'package:weather/daily_forecast.dart';
 import 'package:weather/add_info.dart';
 import 'package:weather/extra.dart';
@@ -33,6 +34,7 @@ class WeatherScreen extends StatefulWidget {
 
 class _WeatherScreenState extends State<WeatherScreen> {
   late Future weatherData;
+  bool _isLoading = false;
 
   @override
   void initState() {
@@ -42,6 +44,9 @@ class _WeatherScreenState extends State<WeatherScreen> {
 
   Future<Map<String, dynamic>> getWeather() async {
     try {
+      setState(() {
+        _isLoading = true;
+      });
       String cityName = "London";
       final result = await http.get(Uri.parse(
           'https://api.openweathermap.org/data/2.5/forecast?q=$cityName,uk&APPID=$opeenWeatherApi'));
@@ -49,6 +54,9 @@ class _WeatherScreenState extends State<WeatherScreen> {
       if (data['cod'] != '200') {
         throw "An Error Occurred";
       }
+      setState(() {
+        _isLoading = false;
+      });
       return data;
     } catch (e) {
       throw e.toString();
@@ -69,7 +77,10 @@ class _WeatherScreenState extends State<WeatherScreen> {
         ),
         trailing: GestureDetector(
           onTap: () {
-            setState(() {});
+            setState(() {
+              _isLoading = true;
+              weatherData = getWeather();
+            });
           },
           child: const Icon(
             size: 25.0,
@@ -177,9 +188,10 @@ class _WeatherScreenState extends State<WeatherScreen> {
                     height: 160,
                     child: ListView.builder(
                       scrollDirection: Axis.horizontal,
-                      itemCount: 5,
+                      itemCount: 20,
                       itemBuilder: (context, index) {
                         final hourlyItem = data['list'][index + 1];
+                        final time = DateTime.parse(hourlyItem['dt_txt']);
                         final hourlySky =
                             data['list'][index + 1]['weather'][0]['main'];
                         return HourlyForecast(
@@ -187,7 +199,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
                           icon: hourlySky == "Clouds" || hourlySky == "Clear"
                               ? CupertinoIcons.cloud_fill
                               : CupertinoIcons.sun_min_fill,
-                          time: hourlyItem['dt'].toString(),
+                          time: DateFormat.Hm().format(time),
                         );
                       },
                     ),
@@ -198,9 +210,11 @@ class _WeatherScreenState extends State<WeatherScreen> {
                     child: Text(
                       "Additional Information",
                       style: TextStyle(
+                        overflow: TextOverflow.ellipsis,
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
                       ),
+                      maxLines: 1,
                     ),
                   ),
                   SingleChildScrollView(
