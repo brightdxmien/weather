@@ -11,9 +11,15 @@ class Weather extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const CupertinoApp(
-      theme: CupertinoThemeData(brightness: Brightness.dark),
-      home: WeatherScreen(),
+    return const MaterialApp(
+      home: CupertinoApp(
+        home: WeatherScreen(),
+      ),
     );
   }
 }
+
+CupertinoThemeData lightTheme = const CupertinoThemeData(
+  primaryColor: CupertinoColors.systemBlue,
+  scaffoldBackgroundColor: Color.fromARGB(255, 246, 251, 255),
+);

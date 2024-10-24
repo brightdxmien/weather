@@ -5,11 +5,13 @@ class HourlyForecast extends StatelessWidget {
   final String time;
   final IconData icon;
   final String temperature;
+  final Color iconColor;
   const HourlyForecast({
     super.key,
     required this.temperature,
     required this.icon,
     required this.time,
+    required this.iconColor,
   });
 
   @override
@@ -17,30 +19,44 @@ class HourlyForecast extends StatelessWidget {
     return SizedBox(
       width: 120,
       child: Card(
-        child: Padding(
-          padding: EdgeInsets.all(20.0),
-          child: Column(
-            children: [
-              Text(
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                time,
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
+        elevation: 3,
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            gradient: LinearGradient(
+              colors: [
+                const Color.fromARGB(255, 255, 255, 255),
+                const Color.fromARGB(239, 250, 250, 250),
+              ],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+            ),
+          ),
+          child: Padding(
+            padding: EdgeInsets.all(20.0),
+            child: Column(
+              children: [
+                Text(
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  time,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              Icon(
-                icon,
-                color: CupertinoColors.white,
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              Text(temperature),
-            ],
+                SizedBox(
+                  height: 20,
+                ),
+                Icon(
+                  icon,
+                  color: iconColor,
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                Text(temperature),
+              ],
+            ),
           ),
         ),
       ),
